@@ -1,4 +1,6 @@
 //funcion asignadora de los colores segun el atributo d
+var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+var osmAttrib = 'Map data &copy; OpenStreetMap contributors';
 
 function getColor(d) {
     return d > 100000000 ? '#800026' :
@@ -169,9 +171,16 @@ title.onAdd = function(map) {
 };
 title.addTo(map);
 
+var options = {
+    container_width: "300px",
+    container_maxHeight: "350px",
+    group_maxHeight: "80px",
+    exclusive: false
+};
+
 L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(map);
-
-
+var osm2 = new L.TileLayer(osmUrl, { minZoom: 0, maxZoom: 10, attribution: osmAttrib });
+var miniMap = new L.Control.MiniMap(osm2, { toggleDisplay: true }).addTo(map);
 //-----GeoJson
 // L.geoJson(paises, {
 //     //funcion de colores
