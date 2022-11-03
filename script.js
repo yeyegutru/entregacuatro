@@ -109,51 +109,57 @@ var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         'contributors',
     maxZoom: 18
 });
+var osmg = L.tileLayer('http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}', {
+    attribution: '&copy; <a href="google.com">OpenStreetMapGoogle</a>' +
+        'contributors',
+    maxZoom: 18
+});
+//para agregar la funcion del popup al mapa
+var Vpaises = L.geoJson(paises, {
+    style: style,
+    onEachFeature: popup
+});
 
 
 
-//el 'map' es el id del div donde se mostrara el mapa
+var Vdepartamentos = L.geoJson(departamento, {
+    style: styleDepartamento
+});
+
+
+
+var Vciudades = L.geoJson(ciudades, {
+    pointToLayer: pointToLayer,
+    onEachFeature: popupCity
+});
+
 var map = L.map('map', {
     //coordenadas decimanles donde se abrira el mapa
-    center: [41.66, -4.72],
+    center: [3.66, -74.72],
     //zona bastante grande
-    zoom: 3,
+    zoom: 6,
     //llamo la capa base 
-    layers: osm,
+    layers: [osm, Vpaises, Vciudades, Vdepartamentos],
     //para con la ruedita del maouse acercarse o alejarse
     scrollWheelZoom: true,
 });
-//-----GeoJson
+var overlayMaps = {
+    "<img src='https://secure.webtoolhub.com/static/resources/icons/set20/309ee4e2927.png' height=15px, width=15px /> Paises": Vpaises,
+    "<img src='https://c0.klipartz.com/pngpicture/751/945/gratis-png-icono-de-la-tarjeta-de-visita-del-logotipo-edificio-de-la-ciudad.png' height=15px, width=15px/> Ciudades": Vciudades,
+    "<img src='https://img.freepik.com/vector-gratis/mapa-3d-departamento-cundinamarca-colombia_97886-4862.jpg' height=15px, width=15px/> Departamentos": Vdepartamentos
+};
+//capas base
+var baseMaps = {
+    "OpenStreetMaps": osm,
+    "GoogleMaps": osmg
+};
+var overlayMaps = {
+    "Paises": Vpaises,
+    "Ciudades": Vciudades,
+    "Departamento": Vdepartamentos
+};
 
-
-
-// L.geoJson(paises, {
-//     //funcion de colores
-//     style: style
-// }).addTo(map);
-
-
-//para agregar la funcion del popup al mapa
-geojson = L.geoJson(paises, {
-    style: style,
-    onEachFeature: popup
-}).addTo(map);
-
-
-
-var depar = L.geoJson(departamento, {
-    style: styleDepartamento
-}).addTo(map);
-
-console.log(depar)
 L.control.scale().addTo(map);
-
-L.geoJson(ciudades, {
-    pointToLayer: pointToLayer,
-    onEachFeature: popupCity
-}).addTo(map)
-
-
 var title = L.control();
 title.onAdd = function(map) {
     var div = L.DomUtil.create('div', 'info');
@@ -162,3 +168,20 @@ title.onAdd = function(map) {
     return div;
 };
 title.addTo(map);
+
+L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(map);
+
+
+//-----GeoJson
+// L.geoJson(paises, {
+//     //funcion de colores
+//     style: style
+// }).addTo(map);
+
+
+
+
+
+
+
+//el 'map' es el id del div donde se mostrara el mapa
